@@ -48,9 +48,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 }
 
 dependencies {
+    api project(':koin-android')
 
     // Koin
-    api "io.insert-koin:koin-android:$koin_version"
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
     testImplementation 'junit:junit:4.13.2'
 
