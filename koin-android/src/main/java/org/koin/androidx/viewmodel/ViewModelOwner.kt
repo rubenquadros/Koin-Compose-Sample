@@ -3,7 +3,6 @@ package org.koin.androidx.viewmodel
 import android.os.Bundle
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.navigation.NavBackStackEntry
 import androidx.savedstate.SavedStateRegistryOwner
 
 typealias ViewModelOwnerDefinition = () -> ViewModelOwner
@@ -15,9 +14,9 @@ class ViewModelOwner(
 ) {
     companion object {
         fun from(storeOwner: ViewModelStoreOwner, stateRegistry: SavedStateRegistryOwner? = null) = ViewModelOwner(
-                storeOwner.viewModelStore, stateRegistry, if (storeOwner is NavBackStackEntry) storeOwner.arguments else null)
+                storeOwner.viewModelStore, stateRegistry)
 
-        fun from(storeOwner: ViewModelStoreOwner) = ViewModelOwner(storeOwner.viewModelStore, defaultArgs = if (storeOwner is NavBackStackEntry) storeOwner.arguments else null)
+        fun from(storeOwner: ViewModelStoreOwner) = ViewModelOwner(storeOwner.viewModelStore)
 
         fun fromAny(owner: Any) = ViewModelOwner((owner as ViewModelStoreOwner).viewModelStore,
                 owner as? SavedStateRegistryOwner)

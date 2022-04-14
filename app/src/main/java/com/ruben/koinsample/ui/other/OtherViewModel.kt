@@ -15,3 +15,12 @@ class SecondViewModel(private val handle: SavedStateHandle): ViewModel() {
 
 
 }
+
+class ThirdViewModel(private val handle: SavedStateHandle): ViewModel() {
+
+    fun getValue() : String {
+        return handle.get<String>(PARAM) ?: "Y null?"
+    }
+
+
+}

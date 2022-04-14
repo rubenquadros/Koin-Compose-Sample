@@ -2,6 +2,7 @@ package com.ruben.koinsample
 
 import android.app.Application
 import com.ruben.koinsample.ui.other.SecondViewModel
+import com.ruben.koinsample.ui.other.ThirdViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -19,4 +20,5 @@ class MyApplication: Application() {
 
 val appModule = module {
     viewModel { SecondViewModel(get()) }
+    viewModel { ThirdViewModel(get()) }
 }

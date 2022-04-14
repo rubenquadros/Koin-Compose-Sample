@@ -37,9 +37,16 @@ typealias BundleDefinition = () -> Bundle
 inline fun <reified T : ViewModel> Scope.getViewModel(
         qualifier: Qualifier? = null,
         noinline owner: ViewModelOwnerDefinition,
-        noinline parameters: ParametersDefinition? = null
+        noinline parameters: ParametersDefinition? = null,
+        noinline state: BundleDefinition? = null
 ): T {
-    return getViewModel(qualifier, owner, T::class, parameters = parameters)
+    return getViewModel(
+        qualifier = qualifier,
+        owner = owner,
+        clazz = T::class,
+        parameters = parameters,
+        state = state
+    )
 }
 
 fun <T : ViewModel> Scope.getViewModel(
@@ -57,8 +64,7 @@ fun <T : ViewModel> Scope.getViewModel(
                     state,
                     parameters,
                     ownerDef.store,
-                    ownerDef.stateRegistry,
-                    ownerDef.defaultArgs
+                    ownerDef.stateRegistry
             )
     )
 }

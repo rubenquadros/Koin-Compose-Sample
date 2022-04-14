@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
+import androidx.savedstate.SavedStateRegistryOwner
 import org.koin.androidx.viewmodel.ViewModelOwner
 import org.koin.androidx.viewmodel.ext.android.getStateViewModel
 import org.koin.androidx.viewmodel.scope.BundleDefinition
@@ -50,9 +51,15 @@ inline fun <reified T : ViewModel> getViewModel(
     scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val storeOwner = owner?.let { ViewModelOwner.from(it) } ?: getComposeViewModelOwner()
+    val storeOwner = owner?.let { ViewModelOwner.fromCompose(it) } ?: getComposeViewModelOwner()
+    val state = (owner as? NavBackStackEntry)?.arguments ?: storeOwner.defaultArgs ?: Bundle()
     return remember(qualifier, parameters) {
-        scope.getViewModel(qualifier, { storeOwner }, parameters)
+        scope.getViewModel(
+            qualifier = qualifier,
+            owner = { storeOwner },
+            parameters = parameters,
+            state = { state }
+        )
     }
 }
 
@@ -63,7 +70,7 @@ inline fun <reified T : ViewModel> getViewModel(
  */
 @Composable
 fun getComposeViewModelOwner(): ViewModelOwner {
-    return ViewModelOwner.from(
+    return ViewModelOwner.fromCompose(
         LocalViewModelStoreOwner.current!!,
         LocalSavedStateRegistryOwner.current
     )
@@ -110,3 +117,30 @@ inline fun <reified T : ViewModel> getStateViewModel(
         storeOwner.stateRegistry!!.getStateViewModel(qualifier, state, parameters)
     }
 }
+
+/**
+ * @param storeOwner
+ * @param stateRegistry
+ *
+ * @author Ruben Quadros
+ */
+fun ViewModelOwner.Companion.fromCompose(
+    storeOwner: ViewModelStoreOwner,
+    stateRegistry: SavedStateRegistryOwner? = null
+) = ViewModelOwner(
+    store = storeOwner.viewModelStore,
+    stateRegistry = stateRegistry,
+    defaultArgs = if (storeOwner is NavBackStackEntry) storeOwner.arguments else null
+)
+
+/**
+ * @param storeOwner
+ *
+ * @author Ruben Quadros
+ */
+fun ViewModelOwner.Companion.fromCompose(
+    storeOwner: ViewModelStoreOwner
+) = ViewModelOwner(
+    store = storeOwner.viewModelStore,
+    defaultArgs = if (storeOwner is NavBackStackEntry) storeOwner.arguments else null
+)

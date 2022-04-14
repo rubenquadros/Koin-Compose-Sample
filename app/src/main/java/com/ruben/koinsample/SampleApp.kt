@@ -10,8 +10,10 @@ import androidx.navigation.navArgument
 import com.ruben.koinsample.Destinations.HOME
 import com.ruben.koinsample.Destinations.PARAM
 import com.ruben.koinsample.Destinations.SECOND_SCREEN
+import com.ruben.koinsample.Destinations.THIRD_SCREEN
 import com.ruben.koinsample.ui.home.HomeScreen
 import com.ruben.koinsample.ui.other.SecondScreen
+import com.ruben.koinsample.ui.other.ThirdScreen
 
 /**
  * Created by Ruben Quadros on 19/01/22
@@ -32,7 +34,16 @@ fun SampleApp() {
                 navArgument(PARAM) { type = NavType.StringType }
             )
         ) {
-            SecondScreen()
+            SecondScreen(openThirdScreen = navGraph.openThirdScreen)
+        }
+
+        composable(
+            route = "$THIRD_SCREEN/{$PARAM}",
+            arguments = listOf(
+                navArgument(PARAM) { type = NavType.StringType }
+            )
+        ) {
+            ThirdScreen()
         }
     }
 

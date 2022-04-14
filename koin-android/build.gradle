@@ -22,7 +22,6 @@ android {
 
 dependencies {
     api "io.insert-koin:koin-core:$koin_version"
-    api "androidx.navigation:navigation-runtime-ktx:2.4.0"
 
     implementation "androidx.appcompat:appcompat:$androidx_lib_version"
 

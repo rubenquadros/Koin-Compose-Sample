@@ -49,6 +49,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 
 dependencies {
     api project(':koin-android')
+    api "androidx.navigation:navigation-runtime-ktx:$androidx_nav"
 
     // Koin
     testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
