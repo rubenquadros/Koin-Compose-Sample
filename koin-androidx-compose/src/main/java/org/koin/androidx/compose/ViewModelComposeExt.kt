@@ -76,7 +76,7 @@ inline fun <reified T : ViewModel> viewModel(
     noinline parameters: ParametersDefinition? = null,
 ): Lazy<T> {
     val storeOwner = owner?.let { ViewModelOwner.fromCompose(it) } ?: getComposeViewModelOwner()
-    val state = (owner as? NavBackStackEntry)?.arguments ?: storeOwner.defaultArgs ?: Bundle()
+    val state = (owner as? NavBackStackEntry)?.arguments ?: storeOwner.defaultArgs
     return remember(qualifier, parameters) {
         ViewModelLazy(T::class, { storeOwner.storeOwner.viewModelStore }){
             getViewModelFactory<T>(
@@ -84,7 +84,7 @@ inline fun <reified T : ViewModel> viewModel(
                 qualifier = qualifier,
                 parameters = parameters,
                 scope = scope,
-                state = {state}
+                state = state?.let { {it} } ?: emptyState()
             )
         }
     }
@@ -108,7 +108,7 @@ inline fun <reified T : ViewModel> getStateViewModel(
     scope: Scope = GlobalContext.get().scopeRegistry.rootScope,
     noinline parameters: ParametersDefinition? = null,
 ): T {
-    val storeOwner = owner?.let { ViewModelOwner.fromCompose(it) } ?: getComposeViewModelOwner()
+    val storeOwner = owner?.let { ViewModelOwner.from(it) } ?: getComposeViewModelOwner()
     return remember(qualifier, parameters) {
         ViewModelLazy(T::class, { storeOwner.storeOwner.viewModelStore }){
             getViewModelFactory<T>({storeOwner},qualifier,parameters, state,scope)
@@ -128,7 +128,7 @@ fun ViewModelOwner.Companion.fromCompose(
 ) = ViewModelOwner(
     storeOwner = storeOwner,
     stateRegistry = stateRegistry,
-    defaultArgs = if (storeOwner is NavBackStackEntry) storeOwner.arguments else null
+    defaultArgs = (storeOwner as? NavBackStackEntry)?.arguments
 )
 
 /**
@@ -140,5 +140,5 @@ fun ViewModelOwner.Companion.fromCompose(
     storeOwner: ViewModelStoreOwner
 ) = ViewModelOwner(
     storeOwner = storeOwner,
-    defaultArgs = if (storeOwner is NavBackStackEntry) storeOwner.arguments else null
+    defaultArgs = (storeOwner as? NavBackStackEntry)?.arguments
 )
